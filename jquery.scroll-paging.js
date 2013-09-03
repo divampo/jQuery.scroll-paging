@@ -1,6 +1,6 @@
 /**
  * jQuery.scroll-paging - jQuery plugin for infinite scroll pagination
- * Version: 0.8
+ * Version: 0.8.1
  * https://github.com/divampo/jQuery.scroll-paging
  * https://bitbucket.org/divampo/jquery.scroll-paging
  *
@@ -13,10 +13,10 @@
 	// constructor
 	$.scrollPaging = function(elem, container, opts) {
 		this.$o = $(elem),
-		this.$container = $(container),
-		this.options = $.extend(true, $.scrollPaging.defaults, opts),
-		this.last_scroll_position = null,
-		this.cache_page = null;
+			this.$container = $(container),
+			this.options = $.extend(true, $.scrollPaging.defaults, opts),
+			this.last_scroll_position = null,
+			this.cache_page = null;
 
 		this.options.offset = parseInt(this.options.offset);
 
@@ -30,8 +30,8 @@
 			th._action();
 		});
 		$(window).unbind('load', function() {
-			if (this.options.currentPage > this.options.startPage) {
-				this._loadPrev();
+			if (th.options.currentPage > th.options.startPage) {
+				th._loadPrev();
 			}
 		});
 		for (var i in this.options.class) {
@@ -87,8 +87,8 @@
 
 		// load previous content
 		$(window).bind('load', function() {
-			if (this.options.currentPage > this.options.startPage) {
-				this._loadPrev();
+			if (th.options.currentPage > th.options.startPage) {
+				th._loadPrev();
 			}
 		});
 	};
@@ -114,7 +114,7 @@
 		if (
 			direction == -1 // scroll up
 				&& !$first.is('.' + this.options.class.first) // is not first item
-				&& $first.position().top + this.options.offset > $(window).scrollTop()  // step over upper threshold
+				&& $first.position().top + $first.outerHeight() + this.options.offset > $(window).scrollTop()  // step over upper threshold
 				&& $first.data('loading') != 1 // is not loading
 			) {
 			this._loadPrev();
