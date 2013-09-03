@@ -2,7 +2,7 @@
  * jQuery.scroll-paging - jQuery plugin for infinite scroll pagination
  * Version: 0.8
  * https://github.com/divampo/jQuery.scroll-paging
- * https://bitbucket.org/divampo/jquery.scroll-paging/wiki/Home
+ * https://bitbucket.org/divampo/jquery.scroll-paging
  *
  * Copyright (c) 2013 Dmitry Serpakov
  * Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php)
