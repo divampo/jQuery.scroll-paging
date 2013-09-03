@@ -18,7 +18,7 @@
 			this.last_scroll_position = null,
 			this.cache_page = null;
 
-		this.options.offset = parseInt(this.options.offset);
+		this.options.offset = parseInt(this.options.offset, 10);
 
 		this._init();
 	};
@@ -128,7 +128,7 @@
 					&& !$item.is('.' + th.options.class.last) // is not last item
 					&& $item.position().top + $item.outerHeight() <= $(window).scrollTop() + $(window).height() // full item is visible from bottom
 				) {
-				current_pages.push(parseInt($item.data('page')));
+				current_pages.push(parseInt($item.data('page'), 10));
 			}
 
 			if (
@@ -136,7 +136,7 @@
 					&& !$item.is('.' + th.options.class.first) // is not first item
 					&& $item.position().top >= $(window).scrollTop() // full item is visible from top
 				) {
-				current_pages.push(parseInt($item.data('page')) - 1); // minus 1 because we ALREADY PASS current page
+				current_pages.push(parseInt($item.data('page'), 10) - 1); // minus 1 because we ALREADY PASS current page
 			}
 		});
 
