@@ -1,6 +1,6 @@
 /**
  * jQuery.scroll-paging - jQuery plugin for infinite scroll pagination
- * Version: 0.8.1
+ * Version: 0.8.2
  * https://github.com/divampo/jQuery.scroll-paging
  * https://bitbucket.org/divampo/jquery.scroll-paging
  *
@@ -16,7 +16,8 @@
 			this.$container = $(container),
 			this.options = $.extend(true, $.scrollPaging.defaults, opts),
 			this.last_scroll_position = null,
-			this.cache_page = null;
+			this.cache_page = null,
+			this.loading = 0;
 
 		this.options.offset = parseInt(this.options.offset, 10);
 
@@ -59,7 +60,7 @@
 			}).promise();
 		},
 		paging: function (p) {
-			console.log(p);
+			// console.log(p);
 		},
 		class: {
 			first: 'first-scroll-item',
@@ -106,7 +107,7 @@
 			direction == 1 // scroll down
 				&& !$last.is('.' + this.options.class.last) // is not last item
 				&& $last.position().top + $last.outerHeight() - this.options.offset <= $(window).scrollTop() + $(window).height()  // step over bottom threshold
-				&& $last.data('loading') != 1 // is not loading
+				&& this.loading != 1 // is not loading
 			) {
 			this._loadNext();
 		}
@@ -115,7 +116,7 @@
 			direction == -1 // scroll up
 				&& !$first.is('.' + this.options.class.first) // is not first item
 				&& $first.position().top + $first.outerHeight() + this.options.offset > $(window).scrollTop()  // step over upper threshold
-				&& $first.data('loading') != 1 // is not loading
+				&& this.loading != 1 // is not loading
 			) {
 			this._loadPrev();
 		}
@@ -162,7 +163,7 @@
 		var th = this,
 			$last = this.$container.find(this.options.items).last();
 
-		$last.data('loading', 1);
+		this.loading = 1;
 		this.options.load($last.data('page'), 'after')
 			.done(function() {
 				if ($last.data('page') >= th.options.endPage) { // last page
@@ -171,7 +172,7 @@
 				th.$container.find(th.options.items).last()
 					.addClass(th.options.class.page)
 					.data('page', $last.data('page') + 1).attr('data-page', $last.data('page') + 1);
-				$last.data('loading', 0);
+				th.loading = 0;
 			})
 			.fail(function () { // fallback method to finish loading if nothing was added
 				th.$container.find(th.options.items).last()
@@ -180,7 +181,7 @@
 					.data('page', $last.data('page') + 1).attr('data-page', $last.data('page') + 1);
 
 				th.options.endPage = $last.data('page');
-				$last.data('loading', 0);
+				th.loading = 0
 			});
 	}
 
@@ -189,8 +190,8 @@
 		var th = this,
 			$first = this.$container.find(this.options.items).first();
 
-		$first.data('loading', 1);
 		var cache_block_height = this.$container.outerHeight();
+		this.loading = 1;
 		this.options.load($first.data('page') - 1, 'before')
 			.done(function() {
 				if ($first.data('page') - 1 <= th.options.startPage) { // last page
@@ -202,7 +203,7 @@
 
 				// fix scrolling to last user position
 				$(window).scrollTop($(window).scrollTop() + (th.$container.outerHeight() - cache_block_height));
-				$first.data('loading', 0);
+				th.loading = 0;
 			})
 			.fail(function () { // fallback method to finish loading if nothing was added
 				th.$container.find(th.options.items).first()
@@ -211,7 +212,7 @@
 					.data('page', $first.data('page') - 1).attr('data-page', $first.data('page') - 1);
 
 				th.options.startPage = $first.data('page');
-				$first.data('loading', 0);
+				th.loading = 0;
 			});
 	};
 
