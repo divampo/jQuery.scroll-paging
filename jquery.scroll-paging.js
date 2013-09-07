@@ -1,6 +1,6 @@
 /**
  * jQuery.scroll-paging - jQuery plugin for infinite scroll pagination
- * Version: 0.8.2
+ * Version: 0.8.3
  * https://github.com/divampo/jQuery.scroll-paging
  * https://bitbucket.org/divampo/jquery.scroll-paging
  *
@@ -18,6 +18,7 @@
 			this.last_scroll_position = null,
 			this.cache_page = null,
 			this.loading = 0;
+		this.cache = {};
 
 		this.options.offset = parseInt(this.options.offset, 10);
 
@@ -27,14 +28,8 @@
 	// public destroy scrollPaging instance
 	$.scrollPaging.prototype.destroy = function () {
 		var th = this;
-		$(window).off('scroll', this.$o, function() {
-			th._action();
-		});
-		$(window).unbind('load', function() {
-			if (th.options.currentPage > th.options.startPage) {
-				th._loadPrev();
-			}
-		});
+		$(window).off('scroll', this.cache['scroll']);
+		$(window).off('load', this.cache['load']);
 		for (var i in this.options.class) {
 			this.$container.find(this.options.items).removeClass(this.options.class[i]);
 		}
@@ -82,16 +77,18 @@
 		this.$container.find(this.options.items).last().addClass(this.options.class.page).data('page', this.options.currentPage + 1).attr('data-page', this.options.currentPage + 1);
 
 		var th = this;
-		$(window).on('scroll', this.$o, function() {
+		this.cache['scroll'] = function () {
 			th._action();
-		});
+		};
+		$(window).on('scroll', this.cache['scroll']);
 
 		// load previous content
-		$(window).bind('load', function() {
+		this.cache['load'] = function () {
 			if (th.options.currentPage > th.options.startPage) {
 				th._loadPrev();
 			}
-		});
+		};
+		$(window).on('load', this.cache['load']);
 	};
 
 	// private scroll process action
